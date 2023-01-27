@@ -14,6 +14,7 @@ exports.create = async (req, res, next) => {
         rol,
         lenguage,
       };
+
       await createUser(usuario);
     } else {
       return res.send("Los campos no pueden ir vacíos");
@@ -30,14 +31,20 @@ exports.create = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return next(new ErrorResponse("Ingrese un email y un password", 400));
     }
 
-    await verifyCredentials(email, password);
-    // aqui digo que el email se incluya en el token
-    const token = jwt.sign({ email }, JWT_SECRET_WORD);
-    console.log("token desde login", token);
+    const valorBool = await verifyCredentials(email, password);
+
+    if (!valorBool) {
+      return next(new ErrorResponse("Las credenciales son incorrectas", 400));
+    }
+
+    const token = jwt.sign({ email }, JWT_SECRET_WORD, {
+      expiresIn: process.env.JWT_EXPIRE,
+    });
 
     res.send(token);
   } catch (err) {
@@ -49,14 +56,6 @@ exports.login = async (req, res, next) => {
 
 exports.getUser = async (req, res, next) => {
   try {
-    // const Authorization = req.header("Authorization");
-    // console.log("authorization", Authorization);
-    // const token = Authorization.split("Bearer ")[1];
-    // console.log("token: ", token);
-    // jwt.verify(token, JWT_SECRET_WORD);
-    // const { email } = jwt.decode(token);
-    // console.log("email :", email);
-
     return res.json(req.usuario);
   } catch (err) {
     next(
