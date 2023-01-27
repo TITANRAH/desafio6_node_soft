@@ -5,8 +5,8 @@ const JWT_SECRET_WORD = process.env.JWT_SECRET_WORD;
 
 exports.create = async (req, res, next) => {
   try {
-    const { email, password, rol, lenguage } = req.body;
 
+    const { email, password, rol, lenguage } = req.body;
     if (![email, password, rol, lenguage].includes("")) {
       const usuario = {
         email,
@@ -14,12 +14,10 @@ exports.create = async (req, res, next) => {
         rol,
         lenguage,
       };
-
       await createUser(usuario);
     } else {
       return res.send("Los campos no pueden ir vacíos");
     }
-
     return res.send("Usuario creado con éxito");
   } catch (err) {
     next(
@@ -31,21 +29,16 @@ exports.create = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
     if (!email || !password) {
       return next(new ErrorResponse("Ingrese un email y un password", 400));
     }
-
     const valorBool = await verifyCredentials(email, password);
-
     if (!valorBool) {
       return next(new ErrorResponse("Las credenciales son incorrectas", 400));
     }
-
     const token = jwt.sign({ email }, JWT_SECRET_WORD, {
       expiresIn: process.env.JWT_EXPIRE,
     });
-
     res.send(token);
   } catch (err) {
     next(

@@ -12,17 +12,15 @@ exports.seguridad = async (req, res, next) => {
   ) {
     token = req.headers.authorization.slice(6).trim();
   }
-
   if (!token) {
     return next(new ErrorResponse("El cliente no envió el token", 400));
   }
-
+  
   try {
     const { email } = jwt.verify(token, JWT_SECRET_WORD);
     const usuario = await getUserVerify(email);
     console.log("usuario:", usuario);
     req.usuario = usuario;
-
     next();
   } catch (err) {
     return next(

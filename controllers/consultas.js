@@ -21,7 +21,6 @@ exports.verifyCredentials = async (email, password) => {
     const consulta = "SELECT * FROM usuarios WHERE email = $1";
     const values = [email];
     const { rows } = await pool.query(consulta, values);
-    // console.log("row dede verify", rows);
     if (rows == []) {
       throw {
         code: 404,
@@ -29,8 +28,8 @@ exports.verifyCredentials = async (email, password) => {
       };
     }
     const isBool = await bcrypt.compare(password, rows[0].password);
-
     return isBool;
+
   } catch (error) {
     throw error;
   }
