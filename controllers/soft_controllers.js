@@ -1,7 +1,6 @@
-const { createUser, verifyCredentials, getUserVerify } = require("./consultas");
+const { createUser, verifyCredentials } = require("./consultas");
 const ErrorResponse = require("../helpers/errorResponse");
 const jwt = require("jsonwebtoken");
-
 const JWT_SECRET_WORD = process.env.JWT_SECRET_WORD;
 
 exports.create = async (req, res, next) => {
@@ -50,17 +49,15 @@ exports.login = async (req, res, next) => {
 
 exports.getUser = async (req, res, next) => {
   try {
-    const Authorization = req.header("Authorization");
-    console.log("authorization", Authorization);
-    const token = Authorization.split("Bearer ")[1];
-    console.log("token: ", token);
-    jwt.verify(token, JWT_SECRET_WORD);
-    const { email } = jwt.decode(token);
-    console.log("email :", email);
+    // const Authorization = req.header("Authorization");
+    // console.log("authorization", Authorization);
+    // const token = Authorization.split("Bearer ")[1];
+    // console.log("token: ", token);
+    // jwt.verify(token, JWT_SECRET_WORD);
+    // const { email } = jwt.decode(token);
+    // console.log("email :", email);
 
-    const usuario = await getUserVerify(email);
-
-    return res.json(usuario);
+    return res.json(req.usuario);
   } catch (err) {
     next(
       new ErrorResponse(

@@ -1,5 +1,7 @@
 const express = require("express");
 const ruta = express.Router();
+const {seguridad} = require('../middlewares/seguridad');
+
 const {
 create,
 login,
@@ -8,7 +10,7 @@ getUser
 
 ruta.route("/usuarios")
     .post(create)
-    .get(getUser)
+    .get(seguridad, getUser)
 ruta.route("/login")
     .post(login)
 
